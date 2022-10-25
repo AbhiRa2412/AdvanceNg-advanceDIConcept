@@ -1,0 +1,35 @@
+class UserService {
+    sayHi(){
+        console.log('Hi');
+    }
+}
+
+class Component{
+    constructor(public users:UserService){}
+}
+
+//'Angular' DI
+class Injector{
+    private _container = new Map();
+
+    constructor(private _provider:any[] = []){
+        this._provider.forEach((service) =>{
+            this._container.set(service, new service())
+        })
+    }
+    
+    get(service:any){
+        const serviceInstance = this._container.get(service);
+        if(!serviceInstance){
+            throw Error('No Providor Found')
+        }
+        return serviceInstance
+    }
+}
+
+//somewhere in application
+
+const injectorInstance = new Injector([UserService]);
+const component = new Component(injectorInstance.get(UserService))
+
+component.users.sayHi()
